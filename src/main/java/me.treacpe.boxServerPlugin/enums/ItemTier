@@ -1,0 +1,11 @@
+package me.treacpe.boxServerPlugin.enums;
+
+public enum ItemTier {
+    BASE,
+    T1,
+    T2,
+    T3,
+    T4,
+    T5,
+    MAX
+}
