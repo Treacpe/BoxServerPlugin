@@ -1,55 +1,54 @@
 package me.treacpe.boxServerPlugin.items;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class CreateItem {
+import java.util.HashMap;
+import java.util.Map;
+
+public class CustomItem {
 
     private final Material material;
     private final String name;
     private final String collectionCategory;
     private final boolean unbreakable;
+    private final Map<Enchantment, Integer> enchantments = new HashMap<>(); // <-- NEW
 
-    public CreateItem(Material material, String name, String collectionCategory, boolean unbreakable) {
+    public CustomItem(Material material, String name, String collectionCategory, boolean unbreakable) {
         this.material = material;
         this.name = name;
         this.collectionCategory = collectionCategory;
+        this.unbreakable = unbreakable;
     }
 
-    public Material getMaterial() {
-        return material;
+    // Add enchantment to this item
+    public CustomItem addEnchantment(Enchantment enchantment, int level) {
+        enchantments.put(enchantment, level);
+        return this; // allows chaining
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getCollectionCategory() {
-        return collectionCategory;
-    }
-
-    public boolean isUnbreakable(){
-        return unbreakable;
-    }
-
-    // Converts this CustomItem into an actual ItemStack you can give players
     public ItemStack toItemStack() {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
         if (meta != null) {
             meta.setDisplayName(name);
-
-             // Apply unbreakable rule
             meta.setUnbreakable(unbreakable);
-
-            if (unbreakable){
+            if (unbreakable) {
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
             }
+
+            // Apply enchantments
+            for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
+                meta.addEnchant(entry.getKey(), entry.getValue(), true); // `true` allows all levels
+            }
+
+            item.setItemMeta(meta);
         }
 
         return item;
     }
 }
-
