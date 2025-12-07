@@ -30,6 +30,7 @@ public class BoxServerPlugin extends JavaPlugin {
 
         // Register Commands
         getCommand("boxmenu").setExecutor(new BoxMenuCommand());
+        getCommand("createitem").setExecutor(new GiveCustomItemCommand());
 
     }
 
