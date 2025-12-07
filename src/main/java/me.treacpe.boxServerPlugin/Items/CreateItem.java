@@ -1,54 +1,59 @@
 package me.treacpe.boxServerPlugin.items;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CreateItem {
 
     private final Material material;
-    private final String name;
-    private final String collectionCategory;
-    private final boolean unbreakable;
-    private final Map<Enchantment, Integer> enchantments = new HashMap<>(); // <-- NEW
+    private String displayName;
+    private List<String> lore = new ArrayList<>();
+    private boolean unbreakable;
+    private int customModelData = 0;
+    private final Map<Enchantment, Integer> enchantments = new LinkedHashMap<>();
+    private String category;            // Timber, Mineral, etc.
+    private String categoryOrigin;      // "assigned" or "autodetected"
+    private String type;                // "item" or "block"
 
-    public CreateItem(Material material, String name, String collectionCategory, boolean unbreakable) {
+    public CreateItem(Material material) {
         this.material = material;
-        this.name = name;
-        this.collectionCategory = collectionCategory;
-        this.unbreakable = unbreakable;
     }
-
-    // Add enchantment to this item
-    public CreateItem addEnchantment(Enchantment enchantment, int level) {
-        enchantments.put(enchantment, level);
-        return this; // allows chaining
-    }
+    // setters for chaining
+    public CreateItem setDisplayName(String name) { this.displayName = name; return this; }
+    public CreateItem setLore(List<String> lore) { this.lore = lore; return this; }
+    public CreateItem setUnbreakable(boolean unbreakable) { this.unbreakable = unbreakable; return this; }
+    public CreateItem setCustomModelData(int data) { this.customModelData = data; return this; }
+    public CreateItem addEnchantment(Enchantment e, int level) { enchantments.put(e, level); return this; }
+    public CreateItem setCategory(String category) { this.category = category; return this; }
+    public CreateItem setCategoryOrigin(String origin) { this.categoryOrigin = origin; return this; }
+    public CreateItem setType(String type) { this.type = type; return this; }
 
     public ItemStack toItemStack() {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-
-        if (meta != null) {
-            meta.setDisplayName(name);
-            meta.setUnbreakable(unbreakable);
-            if (unbreakable) {
-                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-            }
-
-            // Apply enchantments
-            for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-                meta.addEnchant(entry.getKey(), entry.getValue(), true); // `true` allows all levels
-            }
-
-            item.setItemMeta(meta);
+        if (meta == null) return item;
+        if (displayName != null) meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+        if (!lore.isEmpty()) {
+            List<String> coloredLore = new ArrayList<>();
+            for (String s : lore) coloredLore.add(ChatColor.translateAlternateColorCodes('&', s));
+            meta.setLore(coloredLore);
         }
-
+        meta.setUnbreakable(unbreakable);
+        if (unbreakable) meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        if (customModelData != 0) meta.setCustomModelData(customModelData);
+        for (Map.Entry<Enchantment, Integer> ent : enchantments.entrySet()) {
+            meta.addEnchant(ent.getKey(), ent.getValue(), true);
+        }
+        item.setItemMeta(meta);
         return item;
     }
+
+    // getters for serialization
+    // ...
 }
