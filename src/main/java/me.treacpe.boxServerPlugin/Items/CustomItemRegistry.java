@@ -17,5 +17,5 @@ public class CustomItemRegistry {
             Material.WOODEN_PICKAXE,
             "&FTier 2&7 Wooden Pickaxe",
             "Mineral",
-            True);
+            True).addEnchantment(Enchantment.EFFICIENCY, 1);
 }
