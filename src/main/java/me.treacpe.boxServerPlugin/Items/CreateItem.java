@@ -7,53 +7,46 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
-
 public class CreateItem {
 
-    private final Material material;
-    private String displayName;
-    private List<String> lore = new ArrayList<>();
-    private boolean unbreakable;
-    private int customModelData = 0;
-    private final Map<Enchantment, Integer> enchantments = new LinkedHashMap<>();
-    private String category;            // Timber, Mineral, etc.
-    private String categoryOrigin;      // "assigned" or "autodetected"
-    private String type;                // "item" or "block"
+    private final ItemData data;
 
-    public CreateItem(Material material) {
-        this.material = material;
+    public CreateItem(ItemData data) {
+        this.data = data;
     }
-    // setters for chaining
-    public CreateItem setDisplayName(String name) { this.displayName = name; return this; }
-    public CreateItem setLore(List<String> lore) { this.lore = lore; return this; }
-    public CreateItem setUnbreakable(boolean unbreakable) { this.unbreakable = unbreakable; return this; }
-    public CreateItem setCustomModelData(int data) { this.customModelData = data; return this; }
-    public CreateItem addEnchantment(Enchantment e, int level) { enchantments.put(e, level); return this; }
-    public CreateItem setCategory(String category) { this.category = category; return this; }
-    public CreateItem setCategoryOrigin(String origin) { this.categoryOrigin = origin; return this; }
-    public CreateItem setType(String type) { this.type = type; return this; }
 
     public ItemStack toItemStack() {
-        ItemStack item = new ItemStack(material);
+        ItemStack item = new ItemStack(data.material);
         ItemMeta meta = item.getItemMeta();
-        if (meta == null) return item;
-        if (displayName != null) meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
-        if (!lore.isEmpty()) {
-            List<String> coloredLore = new ArrayList<>();
-            for (String s : lore) coloredLore.add(ChatColor.translateAlternateColorCodes('&', s));
-            meta.setLore(coloredLore);
+
+        if (meta != null) {
+            if (data.name != null)
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', data.name));
+
+            if (data.lore != null && !data.lore.isEmpty())
+                meta.setLore(data.lore.stream()
+                        .map(l -> ChatColor.translateAlternateColorCodes('&', l))
+                        .toList());
+
+            meta.setUnbreakable(data.unbreakable);
+            if (data.unbreakable) meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+
+            if (data.customModelData > 0)
+                meta.setCustomModelData(data.customModelData);
+
+            if (data.enchants != null) {
+                for (var e : data.enchants.entrySet()) {
+                    meta.addEnchant(e.getKey(), e.getValue(), true);
+                }
+            }
+
+            item.setItemMeta(meta);
         }
-        meta.setUnbreakable(unbreakable);
-        if (unbreakable) meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        if (customModelData != 0) meta.setCustomModelData(customModelData);
-        for (Map.Entry<Enchantment, Integer> ent : enchantments.entrySet()) {
-            meta.addEnchant(ent.getKey(), ent.getValue(), true);
-        }
-        item.setItemMeta(meta);
+
         return item;
     }
 
-    // getters for serialization
-    // ...
+    public ItemData getData() {
+        return data;
+    }
 }
