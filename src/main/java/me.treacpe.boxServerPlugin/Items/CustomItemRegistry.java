@@ -4,7 +4,7 @@ import org.bukkit.Material;
 
 import java.util.*;
 
-public class CustomItemRegistry {
+public class ItemRegistry {
 
     public static final CustomItem 
         Tier1_Wooden_Pickaxe = new CustomItem(
