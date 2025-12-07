@@ -8,3 +8,8 @@ commands:
     description: Opens the Box Menu GUI
     usage: /bm , /boxm , /boxmenu
     permission: boxserver.menu
+  createitem:
+    description: Gives a custom item from registry
+    usage: /createitem <itemID>
+    aliases: [ci, createi, citem]
+    permission: op
