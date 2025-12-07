@@ -30,7 +30,12 @@ public class BoxServerPlugin extends JavaPlugin {
 
         // Register Commands
         getCommand("boxmenu").setExecutor(new BoxMenuCommand());
-        getCommand("ci").setExecutor(new CiCommand());
+        
+
+        // Custom Item Registry
+        saveDefaultConfig(); // ensures items.yml exists
+        ItemRegistry.load(this);
+        getCommand("ci").setExecutor(new CiCommand(this));
 
     }
 
