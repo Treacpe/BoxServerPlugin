@@ -1,0 +1,12 @@
+items:
+  Example_TestItem:
+    material: DIAMOND_SWORD
+    name: "&bExample Sword"
+    lore:
+      - "&7Example line of lore"
+    unbreakable: true
+    custom-model-data: 0
+    category: "Combatant"
+    auto-detect: "Combatant"
+    enchants:
+      DAMAGE_ALL: 5
