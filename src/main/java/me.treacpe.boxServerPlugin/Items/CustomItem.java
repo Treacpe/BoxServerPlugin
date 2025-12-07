@@ -4,13 +4,13 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class CustomItem {
+public class CreateItem {
 
     private final Material material;
     private final String name;
     private final String collectionCategory;
 
-    public CustomItem(Material material, String name, String collectionCategory) {
+    public CreateItem(Material material, String name, String collectionCategory) {
         this.material = material;
         this.name = name;
         this.collectionCategory = collectionCategory;
